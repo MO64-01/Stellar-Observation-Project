@@ -1,0 +1,53 @@
+Certainly! Here's a template for capturing detailed technical and scientific information for each image:
+
+---
+
+**Image Information Template**
+
+**Date and Time:**
+- Date: [YYYY-MM-DD]
+- Time: [HH:MM:SS UTC]
+
+**Observation Details:**
+- Celestial Object: [Name of the Object]
+- Telescope: [Telescope Model/Name]
+- Location: [Observation Site]
+
+**Equipment Used:**
+- Telescope Type: [Telescope Design/Type]
+- Aperture Size: [Diameter in mm]
+- Focal Length: [Focal Length in mm]
+- Primary Element: [Details about the Primary Element]
+
+**Camera Setup:**
+- Camera Model: [Camera Model/Type]
+- Sensor Type: [Sensor Type]
+- Exposure Time: [Exposure Time in seconds]
+- ISO: [ISO Setting]
+
+**Observation Conditions:**
+- Weather Conditions: [Clear, Cloudy, etc.]
+- Atmospheric Seeing: [Seeing Conditions - Good, Moderate, Poor]
+- Temperature: [Temperature in Celsius or Fahrenheit]
+
+**Capture Settings:**
+- Apparent Field of View: [FOV in degrees]
+- Image Resolution: [Pixel Dimensions]
+- Filters Used: [If any filters are used]
+- Diurnal Motion Capture: [Yes/No]
+
+**Image Processing:**
+- Software Used: [Image Processing Software]
+- Processing Steps: [Brief Overview of Processing Steps]
+
+**Scientific Goals:**
+- Scientific Objectives: [Brief description of the scientific goals]
+- Hypotheses Tested: [If applicable]
+- Expected Results: [Anticipated outcomes]
+
+**Additional Notes:**
+- Any additional observations, anomalies, or noteworthy details.
+
+---
+
+This template covers a comprehensive range of information, ensuring that each captured image is accompanied by relevant technical and scientific data. Adjustments can be made based on specific project requirements or additional details you find important to include.
