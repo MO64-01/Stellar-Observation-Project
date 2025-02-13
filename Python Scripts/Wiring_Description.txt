@@ -1,0 +1,151 @@
+Here is a step-by-step guide on how to wire a single USB-Serial cable to a ULN2003 module and a micro switch:
+
+### Components Needed:
+1. USB-Serial cable with a DB9 connector
+2. ULN2003 stepper motor driver module
+3. Stepper motor
+4. Micro switch
+5. Jumper wires
+
+### Wiring Diagram:
+1. **USB-Serial Cable to ULN2003:**
+   - Connect the TX (Transmit) pin of the USB-Serial cable to the IN1 pin of the ULN2003 module.
+   - Connect the RX (Receive) pin of the USB-Serial cable to the IN2 pin of the ULN2003 module.
+   - Connect the GND (Ground) pin of the USB-Serial cable to the GND pin of the ULN2003 module.
+
+2. **ULN2003 to Stepper Motor:**
+   - Connect the OUT1, OUT2, OUT3, and OUT4 pins of the ULN2003 module to the corresponding pins of the stepper motor.
+
+3. **Micro Switch to USB-Serial Cable:**
+   - Connect one terminal of the micro switch to the DSR (Data Set Ready) pin of the USB-Serial cable.
+   - Connect the other terminal of the micro switch to the GND (Ground) pin of the USB-Serial cable.
+
+### Example Wiring:
+Assuming the following pinout for the DB9 connector:
+- Pin 2: RX
+- Pin 3: TX
+- Pin 4: DSR
+- Pin 5: GND
+
+Here is how you can wire it:
+
+1. **USB-Serial Cable to ULN2003:**
+   - Pin 3 (TX) -> IN1 (ULN2003)
+   - Pin 2 (RX) -> IN2 (ULN2003)
+   - Pin 5 (GND) -> GND (ULN2003)
+
+2. **ULN2003 to Stepper Motor:**
+   - OUT1 -> Stepper Motor Coil 1
+   - OUT2 -> Stepper Motor Coil 2
+   - OUT3 -> Stepper Motor Coil 3
+   - OUT4 -> Stepper Motor Coil 4
+
+3. **Micro Switch to USB-Serial Cable:**
+   - Pin 4 (DSR) -> Micro Switch Terminal 1
+   - Pin 5 (GND) -> Micro Switch Terminal 2
+
+### Updated Code:
+Ensure your code reads the state of the DSR pin to detect the micro switch signal:
+
+```python
+import serial
+import sys
+import time
+import threading
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLineEdit, QLabel
+
+# Initialize serial ports for both stepper motors
+ser1 = serial.Serial('COM9', 9600)  # Replace 'COM9' with your port name
+ser2 = serial.Serial('COM10', 9600)  # Replace 'COM10' with your second port name
+
+step_sequence = [
+    [1, 0, 0, 0],
+    [1, 1, 0, 0],
+    [0, 1, 0, 0],
+    [0, 1, 1, 0],
+    [0, 0, 1, 0],
+    [0, 0, 1, 1],
+    [0, 0, 0, 1],
+    [1, 0, 0, 1],
+]
+
+def read_micro_switch(serial_port):
+    # Read the state of the DSR (Data Set Ready) control line
+    return serial_port.getDSR()
+
+def move_motor(serial_port, steps, direction=1):
+    sequence = step_sequence if direction == 1 else step_sequence[::-1]
+    for _ in range(steps):
+        for step in sequence:
+            if read_micro_switch(serial_port):
+                print("Micro switch triggered, stopping motor")
+                return
+            command = ''.join(str(bit) for bit in step) + '\n'
+            serial_port.write(command.encode())
+            time.sleep(0.002)  # Adjust speed here
+
+class StepperControl(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.init_ui()
+    
+    def init_ui(self):
+        layout = QVBoxLayout()
+        
+        # Input for step size
+        self.step_input = QLineEdit("10")
+        layout.addWidget(QLabel("Step Increment (degrees):"))
+        layout.addWidget(self.step_input)
+        
+        # RA Controls
+        ra_layout = QHBoxLayout()
+        ra_minus = QPushButton("RA -")
+        ra_plus = QPushButton("RA +")
+        ra_minus.clicked.connect(lambda: self.move_ra(-1))
+        ra_plus.clicked.connect(lambda: self.move_ra(1))
+        ra_layout.addWidget(ra_minus)
+        ra_layout.addWidget(ra_plus)
+        layout.addLayout(ra_layout)
+        
+        # DEC Controls
+        dec_layout = QHBoxLayout()
+        dec_minus = QPushButton("DEC -")
+        dec_plus = QPushButton("DEC +")
+        dec_minus.clicked.connect(lambda: self.move_dec(-1))
+        dec_plus.clicked.connect(lambda: self.move_dec(1))
+        dec_layout.addWidget(dec_minus)
+        dec_layout.addWidget(dec_plus)
+        layout.addLayout(dec_layout)
+        
+        # Set layout
+        self.setLayout(layout)
+        self.setWindowTitle("Stepper Motor Control")
+        
+    def move_ra(self, direction):
+        steps = self.get_steps()
+        t1 = threading.Thread(target=move_motor, args=(ser1, steps, direction))
+        t1.start()
+        
+    def move_dec(self, direction):
+        steps = self.get_steps()
+        t2 = threading.Thread(target=move_motor, args=(ser2, steps, direction))
+        t2.start()
+    
+    def get_steps(self):
+        try:
+            return int(self.step_input.text())
+        except ValueError:
+            return 10  # Default step size
+
+# Create the application
+app = QApplication(sys.argv)
+window = StepperControl()
+window.show()
+sys.exit(app.exec())
+
+# Close the serial ports when the application exits
+ser1.close()
+ser2.close()
+```
+
+This setup allows you to control the stepper motor and detect the micro switch signal using a single USB-Serial cable. Make sure to test the connections and adjust the wiring as needed based on your specific hardware configuration.
