@@ -12,4 +12,4 @@ Utilizing a Pinhole-Sized Primary Optic: Minimizes atmospheric distortion and is
 
 Employing Drift Stacking Technique: Uses Earth's natural rotation to scan the sky, capturing uninterrupted trajectories of celestial objects without complex tracking hardware.
 
-By combining these methods, we aim to provide deeper insights into stellar brightness and structure, questioning established norms and making astronomy more accessible.
+By combining these methods, I aim to provide deeper insights into stellar brightness and structure, questioning established norms and making astronomy more accessible.
